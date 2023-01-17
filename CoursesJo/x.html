@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<body>
+<div
+id="myChart" style="width:100%; max-width:600px; height:500px;">
+</div>
+
+<script>
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+var data = google.visualization.arrayToDataTable([
+  ['Course', 'Number of purchases'], 
+<?php 
+require_once 'login.php'
+   
+   $conn = new sqli($hn, $db, $un, $pw);
+   if($conn->connect_error) die($conn->connect_error);
+   
+   $query = "SELECT course_id, count(*) FROM purchases";
+   $result= $conn->query($query);
+   if(!$result) die($conn->error);
+   $rows = $result->num_rows; 
+        
+   for($i=0;$i<$rows;++$i){
+       $result = data_seek($i);
+       $row = $result->fetch_assoc();
+       echo "[";
+       echo "'$row[0]',$row[1]";
+       echo "], ";
+   }
+?>
+]);
+
+var options = {
+  title:'NUMBER OF PURCHASES'
+};
+
+var chart = new google.visualization.PieChart(document.getElementById('myChart'));
+  chart.draw(data, options);
+}
+</script>
+</body>
+
+</html>
